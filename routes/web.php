@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+
 // 1. المتجر (الزبون)
 Route::get('/', [ProductController::class, 'shopIndex'])->name('shop.index');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('shop.product.show');
@@ -42,3 +45,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/confirm-order', [CartController::class, 'confirmOrder'])
       ->name('cart.confirm')
       ->middleware('auth');
+
+
+Route::get('/import-db', function () {
+    try {
+        $sql = File::get(base_path('ecommerce_pro.sql'));
+        DB::unprepared($sql);
+        return "تم رفع الداتا بيز بنجاح يا مريم! روحي شوفي الموقع دلوقتي.";
+    } catch (\Exception $e) {
+        return "حصل مشكلة: " . $e->getMessage();
+    }
+});      
