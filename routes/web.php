@@ -49,10 +49,20 @@ Route::post('/confirm-order', [CartController::class, 'confirmOrder'])
 
 Route::get('/import-db', function () {
     try {
-        $sql = File::get(base_path('ecommerce_pro.sql'));
+        $filePath = base_path('ecommerce_pro.sql');
+        
+        // 1. نتأكد الملف موجود ولا لأ
+        if (!File::exists($filePath)) {
+            return "يا مريم الملف مش موجود في الفولدر الرئيسي! اتأكدي إنك رفعتيه جنب فولدر app.";
+        }
+
+        // 2. نحاول نقرأ وننفذ
+        $sql = File::get($filePath);
         DB::unprepared($sql);
-        return "تم رفع الداتا بيز بنجاح يا مريم! روحي شوفي الموقع دلوقتي.";
+        
+        return "تم رفع الداتا بيز بنجاح  ! روحي شوفي الموقع دلوقتي.";
     } catch (\Exception $e) {
-        return "حصل مشكلة: " . $e->getMessage();
+        // ده هيطلعلك السبب الحقيقي (مثلاً لو الباسورد غلط)
+        return "حصل مشكلة تقنية: " . $e->getMessage();
     }
-});      
+}); 
